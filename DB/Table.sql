@@ -1,34 +1,44 @@
 CREATE TABLE lang.work_rqst
 (
-  content_id serial PRIMARY KEY,
-  writer_id character varying(20) NOT NULL,
-  editor_id character varying(20),
-  category smallint NOT NULL,
-  kor_lang text NOT NULL,
-  en_lang text,
-  note text,
-  project_code character varying(5) NOT NULL,
-  create_time timestamp without time zone DEFAULT now(),
-  update_time timestamp without time zone
+  mgr_seq serial PRIMARY KEY,
+  
+  req_name character varying(20) NOT NULL,
+  res_name character varying(20),
+  
+  req_lang text NOT NULL,
+  res_lang text,
+  
+  req_time timestamp without time zone DEFAULT now(),
+  res_time timestamp without time zone,
+  
+  etc_note text,
+  cty_code smallint NOT NULL,
+  prj_code character varying(5) NOT NULL
+ 
 );
 
 COMMENT ON TABLE lang.work_rqst IS '번역 요청 테이블';
-COMMENT ON COLUMN lang.work_rqst.content_id IS '글 번호(주키)';
-COMMENT ON COLUMN lang.work_rqst.writer_id IS '국문 작성자 ID';
-COMMENT ON COLUMN lang.work_rqst.editor_id IS '번역자 ID';
-COMMENT ON COLUMN lang.work_rqst.category IS '구분(1,2,3)';
-COMMENT ON COLUMN lang.work_rqst.kor_lang IS '국문';
-COMMENT ON COLUMN lang.work_rqst.en_lang IS '영문';
-COMMENT ON COLUMN lang.work_rqst.note IS '비고';
-COMMENT ON COLUMN lang.work_rqst.project_code IS '프로젝트 코드(5자리 00001)';
-COMMENT ON COLUMN lang.work_rqst.create_time IS '게시글 작성 날짜시간';
-COMMENT ON COLUMN lang.work_rqst.update_time IS '게시글 번역 날짜시간';
+COMMENT ON COLUMN lang.work_rqst.mgr_seq IS '관리_번호(주키)';
+
+COMMENT ON COLUMN lang.work_rqst.req_name IS '번역요청_자';
+COMMENT ON COLUMN lang.work_rqst.res_name IS '번역응답_자';
+
+COMMENT ON COLUMN lang.work_rqst.req_lang IS '번역요청_글';
+COMMENT ON COLUMN lang.work_rqst.res_lang IS '번역응답_글';
+
+COMMENT ON COLUMN lang.work_rqst.req_time IS '번역요청_시간';
+COMMENT ON COLUMN lang.work_rqst.res_time IS '번역응답_시간';
+
+COMMENT ON COLUMN lang.work_rqst.etc_note IS '기타_비고';
+COMMENT ON COLUMN lang.work_rqst.cty_code IS '구분_코드(1,2,3)';
+COMMENT ON COLUMN lang.work_rqst.prj_code IS '프로젝트_코드(5자리 00001)';
+
 
 CREATE OR REPLACE FUNCTION update_work_rqst_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.update_time = NOW();
-  RAISE NOTICE 'Setting update_time to: %', NEW.update_time;
+  NEW.res_time = NOW();
+  RAISE NOTICE 'Setting update_time to: %', NEW.res_time;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
