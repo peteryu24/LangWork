@@ -1,0 +1,46 @@
+1. 사용자 등록은 DB에 직접 한다.( 구현 하지 말 것. )
+ - 계정 : 한글명(이름) / 패스워드 : 1234
+
+2. 로그인 시 token 값을 반환 해준다.
+
+
+ㅇ DB
+ DB 명 : gmx_lang
+ 스키마명 : lang
+ 테이블명 : work_rqst ( 번역 요청 테이블 )
+ * 테이블 추가 시 명명 규칙 : {업무}_{행위}
+
+Context 명 : gmxlang
+API 명명 규칙 :
+ /gmxlang/getLangWork : 조회
+ /gmxlang/addLangWork : 등록
+ /gmxlang/delLangWork : 삭제
+ /gmxlang/modLangWork : 수정
+
+
+
+1. 조회 시 번역 완료 여부는 [국문] [영문] [번역자] 데이터가 null 또는 ''이 아닌 경우로 판단한다.
+ - 상태 : 번역 대기 / 번역 완료
+
+2. 조건의 구분(equals) 별 / 국문+영문(like) / 작성자(equals) / 
+번역자 (equals) / 번역 상태(equals. 1번 조건 참고 )
+
+
+
+
+1. 등록 시 [국문]이 중복인 경우 exception 처리를 한다.
+ - response:{ result : false, msg : 중복된 요청 건이 존재합니다. }
+
+2. 등록 시 [국문] [영문] [작성자] [번역자] [비고] 값을 파라미터로 받는다.
+
+3. 수정 시 [국문] [영문] [번역자] [비고] 값을 파라미터로 받는다.
+
+4. 삭제 시 key 값만 파라미터로 받는다.
+
+
+response 규칙
+ { result : boolean, msg : {메세지}, data : { } or [] }
+ 
+  - result : 응답 값
+  - msg : result false 시 메세지
+  - data : 전달 값
