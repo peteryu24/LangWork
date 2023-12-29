@@ -1,2 +1,2 @@
-# LangWork
-Project for Translation
+# Translate Program
+
