@@ -5,7 +5,7 @@
 
 
 ㅇ DB
- DB 명 : gmx_lang
+ DB 명 : gmx_lang 
  스키마명 : lang
  테이블명 : work_rqst ( 번역 요청 테이블 )
  * 테이블 추가 시 명명 규칙 : {업무}_{행위}
