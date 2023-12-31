@@ -4,7 +4,7 @@
 2. 로그인 시 token 값을 반환 해준다.
 
 
-ㅇ DB
+ㅇ DB    
  DB 명 : gmx_lang
  스키마명 : lang
  테이블명 : work_rqst ( 번역 요청 테이블 )
