@@ -11,7 +11,7 @@
         <property name="driverClassName" value="org.postgresql.Driver" />
         <property name="url" value="jdbc:postgresql://10.1.73.14:5432/gmx_lang" />
         <property name="username" value="postgres" />
-        <property name="password" value="0000" />
+        <property name="password" value="geomex12#" />
     </bean>
     
 </beans>
