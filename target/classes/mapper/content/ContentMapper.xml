@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gmx.fwd.mapper.content.ContentMapper">
+
+	<insert id="addLangWork" parameterType="gmx.fwd.vo.contentvo.ContentVo">
+		INSERT INTO 
+			lang.work_rqst (req_name, res_name, req_lang, res_lang, etc_note, cty_code, prj_code) 
+		VALUES 
+			(#{reqName}, #{resName}, #{reqLang}, #{resLang}, #{etcNote}, #{ctyCode}, #{prjCode})
+	</insert>
+	
+	<select id="getLangWorkItem" resultType="gmx.fwd.vo.contentvo.ContentVo">
+		SELECT * FROM 
+			lang.work_rqst 
+		WHERE
+			mgrSeq = #{mgr_seq}
+	</select>
+	
+	<select id="getOrSearchLangWork" parameterType="HashMap">
+	    SELECT *,
+	           CASE
+	               WHEN req_lang IS NOT NULL AND res_lang IS NOT NULL AND res_name IS NOT NULL THEN TRUE
+	               ELSE FALSE
+	           END AS res_flag
+	    FROM lang.work_rqst
+	    <where>
+	        <if test="reqName != null">
+	            AND req_name LIKE CONCAT('%', #{reqName}, '%')
+	        </if>
+	        <if test="resName != null">
+	            AND res_name LIKE CONCAT('%', #{resName}, '%')
+	        </if>
+	        <if test="reqLang != null">
+	            AND req_lang LIKE CONCAT('%', #{reqLang}, '%')
+	        </if>
+	        <if test="resLang != null">
+	            AND res_lang LIKE CONCAT('%', #{resLang}, '%')
+	        </if>
+	        <if test="resFlag != null">
+	            AND res_flag LIKE CONCAT('%', #{resFlag}, '%')
+	        </if>
+	    </where>
+	</select>
+	
+	<update id="modifyLangWork" parameterType="gmx.fwd.vo.contentvo.ContentVo">
+		UPDATE 
+			lang.work_rqst
+		SET 
+			res_name = #{resName}, req_name = #{reqName}, req_lang = #{reqLang}, res_lang = #{resLang}, etc_note = #{etcNote}
+		WHERE 
+			mgr_seq = #{mgrSeq}
+	</update>
+		
+	<delete id="deleteLangWork" parameterType="int">
+		DELETE FROM 
+			lang.work_rqst 
+		WHERE 
+			mgr_seq = #{mgrSeq}
+	</delete>
+			
+	<select id="checkLangWork" parameterType="String">
+		SELECT * FROM
+			lang.work_rqst
+		WHERE
+			req_lang = #{reqLang}
+	</select>
+
+</mapper>
+
+
