@@ -1,30 +1,37 @@
 package gmx.fwd.utils;
 
-import java.util.HashMap;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GmxResult {
 
-	HashMap<String, Object> response = new HashMap<>();
+	private boolean chk;
+	private String msg;
+	private Object data;
 
-	public HashMap<String, Object> resultError(String msg) {
-		return result(false, msg, null);
+	public GmxResult resultError(String msg) {
+		this.chk = false;
+		this.msg = msg;
+		this.data = null;
+		return this;
 	}
 
-	public HashMap<String, Object> result(Object data) {
-		return result(true, null, data);
+	public GmxResult result(Object data) {
+		this.chk = true;
+		this.msg = null;
+		this.data = data;
+		return this;
 	}
 
-	public HashMap<String, Object> result(Boolean chk, String msg, Object data) {
+	public boolean chkFlag() {
+		return chk;
+	}
 
-		HashMap<String, Object> map = new HashMap<String, Object>();
+	public String getMsg() {
+		return msg;
+	}
 
-		map.put("result", chk);
-		map.put("msg", msg);
-		map.put("data", data);
-
-		return map;
-
+	public Object getData() {
+		return data;
 	}
 }
