@@ -33,7 +33,7 @@ public class WorkLangTest {
 	public void addLangWorkTest() {
 		ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
 
-		// Mockito를 사용하여 mockMapper의 동작 정의
+		// Mockito
 		when(mockMapper.checkLangWork(anyString())).thenReturn(true);
 		when(mockMapper.addLangWork(any(ContentVo.class))).thenReturn(1);
 		int result = contentService.addLangWork(contentVo);
