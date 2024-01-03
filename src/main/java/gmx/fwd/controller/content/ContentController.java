@@ -56,16 +56,12 @@ public class ContentController {
 	@ResponseBody
 	@PostMapping(value = "/modLangWork")
 	public HashMap<String, Object> modifyLangWork(@ModelAttribute ContentVo contentVo) {
-		contentVo.setCtyCode(1);
-		contentVo.setPrjCode("00001");
-
 		return contentService.modifyLangWork(contentVo) ? gmxResult.result(true) : gmxResult.resultError("번역 실패");
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/delLangWork")
 	public HashMap<String, Object> deleteLangWork(@RequestParam int mgrSeq) {
-
 		return contentService.deleteLangWork(mgrSeq) ? gmxResult.result(true) : gmxResult.resultError("삭제 실패");
 	}
 }
