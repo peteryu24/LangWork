@@ -6,17 +6,17 @@ public class ContentVo {
 	private int mgrSeq;
 
 	private String reqName;
-	private String resName = "";
+	private String resName;
 
 	private String reqLang;
-	private String resLang = "";
+	private String resLang;
 
 	private Date reqTime;
 	private Date resTime;
 
-	private String etcNote = "";
-	private int ctyCode = 1;
-	private String prjCode = "00001";
+	private String etcNote;
+	private int ctyCode;
+	private String prjCode;
 	
 	private boolean resFlag;
 
@@ -51,6 +51,9 @@ public class ContentVo {
 		this.reqLang = reqLang;
 		this.resLang = resLang;
 		this.resFlag = resFlag;
+		this.etcNote = "";
+		this.ctyCode = 1;
+		this.prjCode = "00001";
 	}
 
 	public int getMgrSeq() {
