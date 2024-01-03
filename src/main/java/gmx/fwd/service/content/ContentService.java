@@ -1,6 +1,5 @@
 package gmx.fwd.service.content;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +14,19 @@ public class ContentService {
 	@Autowired
 	private ContentMapper contentMapper; // change post -> content
 
-	public int addLangWork(String reqName, String resName, String reqLang, String resLang, String etcNote) {
+	@Autowired
+	public ContentService(ContentMapper contentMapper) {
+		this.contentMapper = contentMapper;
+	}
+
+	public int addLangWork(ContentVo contentVo) {
 		try {
-			if (!contentMapper.checkLangWork(reqLang)) {
+			if (!contentMapper.checkLangWork(contentVo.getReqLang())) {
 				return -1; // reqLang already exists
 			}
 
-			ContentVo content = new ContentVo();
-
-			content.setReqName(reqName);
-			content.setResName(resName);
-			content.setReqLang(reqLang);
-			content.setResLang(resLang);
-			content.setEtcNote(etcNote);
-			content.setCtyCode(1);
-			content.setPrjCode("00001");
-
+			ContentVo content = new ContentVo(contentVo.getReqName(), contentVo.getResName(), contentVo.getReqLang(),
+					contentVo.getResLang(), contentVo.getEtcNote(), 1, "00001");
 			return contentMapper.addLangWork(content);
 
 		} catch (Exception e) {
@@ -46,30 +42,21 @@ public class ContentService {
 		}
 	}
 
-	public List<ContentVo> getOrSearchLangWork(String reqName, String resName, String reqLang, String resLang, String resFlag) {
+	public List<ContentVo> getOrSearchLangWork(ContentVo contentVo) {
 		try {
-			HashMap<String, String> searchKeyWord = new HashMap<>();
-			searchKeyWord.put("reqName", reqName);
-			searchKeyWord.put("resName", resName);
-			searchKeyWord.put("reqLang", reqLang);
-			searchKeyWord.put("resLang", resLang);
-			searchKeyWord.put("resFlag", resFlag);
+			ContentVo content = new ContentVo(contentVo.getReqName(), contentVo.getResName(), contentVo.getReqLang(),
+					contentVo.getResLang(), contentVo.getResFlag());
 
-			return contentMapper.getOrSearchLangWork(searchKeyWord);
+			return contentMapper.getOrSearchLangWork(content);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public boolean modifyLangWork(int mgrSeq, String resName, String reqName, String reqLang, String resLang, String etcNote) {
+	public boolean modifyLangWork(ContentVo contentVo) {
 		try {
-			ContentVo content = new ContentVo();
-			content.setMgrSeq(mgrSeq);
-			content.setResName(resName);
-			content.setReqName(reqName);
-			content.setReqLang(reqLang);
-			content.setResLang(resLang);
-			content.setEtcNote(etcNote);
+			ContentVo content = new ContentVo(contentVo.getMgrSeq(), contentVo.getResName(), contentVo.getReqName(), contentVo.getReqLang(),
+					contentVo.getResLang(), contentVo.getEtcNote(), 1, "00001");
 
 			return contentMapper.modifyLangWork(content);
 		} catch (Exception e) {
@@ -84,5 +71,4 @@ public class ContentService {
 			return false;
 		}
 	}
-
 }

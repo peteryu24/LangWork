@@ -1,6 +1,5 @@
 package gmx.fwd.mapper.content;
 
-import java.util.HashMap;
 import java.util.List;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
@@ -13,7 +12,7 @@ public interface ContentMapper {
 
 	List<ContentVo> getLangWorkItem(int mgrSeq);
 	
-	List<ContentVo> getOrSearchLangWork(HashMap<String, String> searchKeyWord);
+	List<ContentVo> getOrSearchLangWork(ContentVo content);
 	
 	boolean modifyLangWork(ContentVo content);
 
