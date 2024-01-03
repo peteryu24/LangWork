@@ -24,10 +24,7 @@ public class ContentService {
 			if (!contentMapper.checkLangWork(contentVo.getReqLang())) {
 				return -1; // reqLang already exists
 			}
-
-			ContentVo content = new ContentVo(contentVo.getReqName(), contentVo.getResName(), contentVo.getReqLang(),
-					contentVo.getResLang(), contentVo.getEtcNote(), 1, "00001");
-			return contentMapper.addLangWork(content);
+			return contentMapper.addLangWork(contentVo);
 
 		} catch (Exception e) {
 			return 0;
@@ -44,10 +41,7 @@ public class ContentService {
 
 	public List<ContentVo> getOrSearchLangWork(ContentVo contentVo) {
 		try {
-			ContentVo content = new ContentVo(contentVo.getReqName(), contentVo.getResName(), contentVo.getReqLang(),
-					contentVo.getResLang(), contentVo.getResFlag());
-
-			return contentMapper.getOrSearchLangWork(content);
+			return contentMapper.getOrSearchLangWork(contentVo);
 		} catch (Exception e) {
 			return null;
 		}
@@ -55,10 +49,7 @@ public class ContentService {
 
 	public boolean modifyLangWork(ContentVo contentVo) {
 		try {
-			ContentVo content = new ContentVo(contentVo.getMgrSeq(), contentVo.getResName(), contentVo.getReqName(), contentVo.getReqLang(),
-					contentVo.getResLang(), contentVo.getEtcNote(), 1, "00001");
-
-			return contentMapper.modifyLangWork(content);
+			return contentMapper.modifyLangWork(contentVo);
 		} catch (Exception e) {
 			return false;
 		}
