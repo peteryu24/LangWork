@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,11 +27,9 @@ public class ContentController {
 
 	@ResponseBody
 	@PostMapping(value = "/addLangWork")
-	public HashMap<String, Object> addLangWork(@RequestParam String reqName, @RequestParam String resName, @RequestParam String reqLang,
-			@RequestParam String resLang, @RequestParam String etcNote) {
+	public HashMap<String, Object> addLangWork(@ModelAttribute ContentVo contentVo) {
+		int addFlag = contentService.addLangWork(contentVo);
 
-		int addFlag = contentService.addLangWork(reqName, resName, reqLang, resLang, etcNote);
-		
 		if (addFlag <= 0) {
 			return gmxResult.resultError(addFlag == -1 ? "중복된 요청 건이 존재합니다." : "게시글 작성 실패");
 		}
@@ -49,23 +48,18 @@ public class ContentController {
 
 	@ResponseBody
 	@RequestMapping(value = "/getLangWorkList")
-	public HashMap<String, Object> getOrSearchLangWork(@RequestParam(defaultValue = "", required = false) String reqName,
-			@RequestParam(defaultValue = "", required = false) String resName,
-			@RequestParam(defaultValue = "", required = false) String reqLang,
-			@RequestParam(defaultValue = "", required = false) String resLang,
-			@RequestParam(defaultValue = "", required = false) String resFlag) {
-
-		List<ContentVo> getOrSearchLangWorkList = contentService.getOrSearchLangWork(reqName, resName, reqLang, resLang, resFlag);
+	public HashMap<String, Object> getOrSearchLangWork(@ModelAttribute ContentVo contentVo) {
+		List<ContentVo> getOrSearchLangWorkList = contentService.getOrSearchLangWork(contentVo);
 		return getOrSearchLangWorkList.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getOrSearchLangWorkList);
 	}
 
 	@ResponseBody
 	@PostMapping(value = "/modLangWork")
-	public HashMap<String, Object> modifyLangWork(@RequestParam int mgrSeq, @RequestParam String resName, @RequestParam String reqName,
-			@RequestParam String reqLang, @RequestParam String resLang, @RequestParam String etcNote) {
+	public HashMap<String, Object> modifyLangWork(@ModelAttribute ContentVo contentVo) {
+		contentVo.setCtyCode(1);
+		contentVo.setPrjCode("00001");
 
-		return contentService.modifyLangWork(mgrSeq, resName, reqName, resLang, reqLang, etcNote) ? gmxResult.result(true)
-				: gmxResult.resultError("번역 실패");
+		return contentService.modifyLangWork(contentVo) ? gmxResult.result(true) : gmxResult.resultError("번역 실패");
 	}
 
 	@ResponseBody
