@@ -1,110 +1,136 @@
 package gmxlang;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import gmx.fwd.mapper.content.ContentMapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import gmx.fwd.controller.content.ContentController;
 import gmx.fwd.service.content.ContentService;
+import gmx.fwd.utils.CustomException;
 import gmx.fwd.utils.GmxResult;
 import gmx.fwd.vo.contentvo.ContentVo;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkLangTest {
 
+	@Mock
 	private ContentService contentService;
-	private ContentMapper mockMapper;
+
+	@InjectMocks
+	private ContentController contentController;
 
 	@Before
 	public void setUp() {
-		mockMapper = mock(ContentMapper.class);
-		contentService = new ContentService(mockMapper);
 	}
 
 	@Test
-	public void addLangWorkTest() {
+	public void runAddLangWork() {
 		ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+		GmxResult expected = new GmxResult().result(true);
+		when(contentService.addLangWork(contentVo)).thenReturn(expected);
 
-		when(mockMapper.checkLangWork(anyString())).thenReturn(false);
-		when(mockMapper.addLangWork(any(ContentVo.class))).thenReturn(1);
-
-		GmxResult result = contentService.addLangWork(contentVo);
-		assertTrue(result.chkFlag());
-		assertNull(result.getMsg());
-		assertNotNull(result.getData());
+		GmxResult result = contentController.addLangWork(contentVo);
+		assertEquals(expected, result);
 	}
 
 	@Test
-	public void addLangWorkDuplicationTest() {
+	public void runAddLangWorkException() {
 		ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+		when(contentService.addLangWork(contentVo)).thenThrow(new CustomException("Error"));
 
-		when(mockMapper.checkLangWork(anyString())).thenReturn(true);
-
-		GmxResult result = contentService.addLangWork(contentVo);
+		GmxResult result = contentController.addLangWork(contentVo);
 		assertFalse(result.chkFlag());
-		assertEquals("중복된 요청 건이 존재합니다", result.getMsg());
+		assertEquals("Error", result.getMsg());
 	}
 
 	@Test
-	public void getLangWorkItemSuccessTest() {
-		List<ContentVo> expectedList = new ArrayList<>();
-		expectedList.add(new ContentVo(0, null, null, null, null, null, 1, null));
-		when(mockMapper.getLangWorkItem(anyInt())).thenReturn(expectedList);
+	public void runGetLangWorkItem() {
+		int mgrSeq = 1;
+	    ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+	    List<ContentVo> expectedList = Collections.singletonList(contentVo);
+	    GmxResult expected = new GmxResult().result(expectedList);
+	    when(contentService.getLangWorkItem(mgrSeq)).thenReturn(expected);
 
-		GmxResult result = contentService.getLangWorkItem(1);
-		assertTrue(result.chkFlag());
-		assertNull(result.getMsg());
-		assertNotNull(result.getData());
-		assertEquals(expectedList, result.getData());
+	    GmxResult result = contentController.getLangWorkItem(mgrSeq);
+	    assertEquals(expected, result);
 	}
 
 	@Test
-	public void getLangWorkItemFailureTest() {
-		when(mockMapper.getLangWorkItem(anyInt())).thenReturn(Collections.emptyList());
+	public void runGetLangWorkItemException() {
+		int mgrSeq = 1;
+		when(contentService.getLangWorkItem(mgrSeq)).thenThrow(new CustomException("Error"));
 
-		GmxResult result = contentService.getLangWorkItem(1);
+		GmxResult result = contentController.getLangWorkItem(mgrSeq);
 		assertFalse(result.chkFlag());
-		assertEquals("조회 실패", result.getMsg());
+		assertEquals("Error", result.getMsg());
 	}
 
 	@Test
-	public void getOrSearchLangWorkTest() {
-		ContentVo contentVo = new ContentVo(null, null, null, null, false);
-		List<ContentVo> expectedList = new ArrayList<>();
-		expectedList.add(contentVo);
-		when(mockMapper.getOrSearchLangWork(any(ContentVo.class))).thenReturn(expectedList);
+	public void runGetOrSearchLangWork() {
+		ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+	    List<ContentVo> expectedList = Collections.singletonList(contentVo);
+	    GmxResult expected = new GmxResult().result(expectedList);
+	    when(contentService.getOrSearchLangWork(contentVo)).thenReturn(expected);
 
-		GmxResult result = contentService.getOrSearchLangWork(contentVo);
-		assertTrue(result.chkFlag());
-		assertNull(result.getMsg());
-		assertNotNull(result.getData());
-		assertEquals(expectedList, result.getData());
+	    GmxResult result = contentController.getOrSearchLangWork(contentVo);
+	    assertEquals(expected, result);
 	}
 
 	@Test
-	public void modifyLangWorkTest() {
-		ContentVo contentVo = new ContentVo(0, null, null, null, null, null, 1, null);
-		when(mockMapper.modifyLangWork(any(ContentVo.class))).thenReturn(true);
-
-		GmxResult result = contentService.modifyLangWork(contentVo);
-		assertTrue(result.chkFlag());
-		assertNull(result.getMsg());
+	public void runGetOrSearchLangWorkException() {
+	    ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+	    when(contentService.getOrSearchLangWork(contentVo)).thenThrow(new CustomException("Error"));
+	    GmxResult result = contentController.getOrSearchLangWork(contentVo);
+	    assertFalse(result.chkFlag());
+	    assertEquals("Error", result.getMsg());
 	}
 
 	@Test
-	public void deleteLangWorkTest() {
-		when(mockMapper.deleteLangWork(anyInt())).thenReturn(true);
-
-		GmxResult result = contentService.deleteLangWork(1);
-		assertTrue(result.chkFlag());
-		assertNull(result.getMsg());
+	public void runModifyLangWork() {
+	    ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+	    GmxResult expected = new GmxResult().result(true);
+	    when(contentService.modifyLangWork(contentVo)).thenReturn(expected);
+	    GmxResult result = contentController.modifyLangWork(contentVo);
+	    assertEquals(expected, result);
 	}
 
+	@Test
+	public void runModifyLangWorkException() {
+	    ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+	    when(contentService.modifyLangWork(contentVo)).thenThrow(new CustomException("Error"));
+	    GmxResult result = contentController.modifyLangWork(contentVo);
+	    assertFalse(result.chkFlag());
+	    assertEquals("Error", result.getMsg());
+	}
+
+
+	@Test
+	public void runDeleteLangWork() {
+		int mgrSeq = 1;
+		GmxResult expected = new GmxResult().result(true);
+		when(contentService.deleteLangWork(mgrSeq)).thenReturn(expected);
+
+		GmxResult result = contentController.deleteLangWork(mgrSeq);
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void runDeleteLangWorkException() {
+		int mgrSeq = 1;
+		when(contentService.deleteLangWork(mgrSeq)).thenThrow(new CustomException("Error"));
+
+		GmxResult result = contentController.deleteLangWork(mgrSeq);
+		assertFalse(result.chkFlag());
+		assertEquals("Error", result.getMsg());
+	}
 }
