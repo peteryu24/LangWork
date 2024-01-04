@@ -2,8 +2,8 @@ package gmxlang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import gmx.fwd.controller.content.ContentController;
+import gmx.fwd.mapper.content.ContentMapper;
 import gmx.fwd.service.content.ContentService;
 import gmx.fwd.utils.CustomException;
 import gmx.fwd.utils.GmxResult;
@@ -26,13 +28,19 @@ public class WorkLangTest {
 
 	@Mock
 	private ContentService contentService;
+	
+	@Mock
+	private ContentMapper contentMapper; 
 
 	@InjectMocks
 	private ContentController contentController;
 
+
 	@Before
 	public void setUp() {
+		MockitoAnnotations.initMocks(this); 
 	}
+
 
 	@Test
 	public void runAddLangWork() {
@@ -51,6 +59,20 @@ public class WorkLangTest {
 		assertFalse(result.chkFlag());
 		assertEquals("Error", result.getMsg());
 		System.out.println(result.getMsg());
+	}
+
+	@Test(expected = CustomException.class)
+	public void addLangWorkThrowsException() {
+		ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
+		doThrow(new RuntimeException("Internal Error")).when(contentMapper).addLangWork(any(ContentVo.class));
+
+		try {
+			contentService.addLangWork(contentVo);
+		} catch (CustomException e) {
+			assertEquals("서버 요청 실패", e.getMessage());
+			assertEquals("Internal Error", e.getCause().getMessage());
+			throw e;
+		}
 	}
 
 	@Test
@@ -104,12 +126,12 @@ public class WorkLangTest {
 	@Test
 	public void runModifyLangWorkException() {
 		ContentVo contentVo = new ContentVo("reqName", "resName", "reqLang", "resLang", "note", 1, "00001");
-	    String errorMessage = "Error";
-	    when(contentService.modifyLangWork(contentVo)).thenThrow(new CustomException(errorMessage));
-	    GmxResult result = contentController.modifyLangWork(contentVo);
-	    assertFalse(result.chkFlag());
-	    assertEquals(errorMessage, result.getMsg());
-	    System.out.println("Caught exception message: " + result.getMsg());
+		String errorMessage = "Error";
+		when(contentService.modifyLangWork(contentVo)).thenThrow(new CustomException(errorMessage));
+		GmxResult result = contentController.modifyLangWork(contentVo);
+		assertFalse(result.chkFlag());
+		assertEquals(errorMessage, result.getMsg());
+		System.out.println("Caught exception message: " + result.getMsg());
 	}
 
 	@Test
