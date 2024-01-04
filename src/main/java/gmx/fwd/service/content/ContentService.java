@@ -6,60 +6,68 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gmx.fwd.mapper.content.ContentMapper;
+import gmx.fwd.utils.CustomException;
+import gmx.fwd.utils.GmxResult;
 import gmx.fwd.vo.contentvo.ContentVo;
 
 @Service
 public class ContentService {
 
 	@Autowired
-	private ContentMapper contentMapper; // change post -> content
+	private ContentMapper contentMapper;
+
+	@Autowired
+	private GmxResult gmxResult;
 
 	@Autowired
 	public ContentService(ContentMapper contentMapper) {
 		this.contentMapper = contentMapper;
 	}
 
-	public int addLangWork(ContentVo contentVo) {
+	public GmxResult addLangWork(ContentVo contentVo) { // 필수 파라미터 req_name, req_lang
 		try {
-			if (!contentMapper.checkLangWork(contentVo.getReqLang())) {
-				return -1; // reqLang already exists
+			if (contentMapper.checkLangWork(contentVo.getReqLang())) {
+				return gmxResult.resultError("중복된 요청 건이 존재합니다");
 			}
-			return contentMapper.addLangWork(contentVo);
-
+			contentMapper.addLangWork(contentVo);
+			return gmxResult.result(true);
 		} catch (Exception e) {
-			return 0;
+			throw new CustomException("서버 요청 실패", e);
 		}
 	}
 
-	public List<ContentVo> getLangWorkItem(int mgrSeq) {
+	public GmxResult getLangWorkItem(int mgrSeq) {
+		List<ContentVo> getLangWorkItem = contentMapper.getLangWorkItem(mgrSeq);
 		try {
-			return contentMapper.getLangWorkItem(mgrSeq);
+			return getLangWorkItem.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getLangWorkItem);
 		} catch (Exception e) {
-			return null;
+			throw new CustomException("서버 요청 실패", e);
 		}
 	}
 
-	public List<ContentVo> getOrSearchLangWork(ContentVo contentVo) {
+	public GmxResult getOrSearchLangWork(ContentVo contentVo) { // 필수 파라미터 검색 값
+		List<ContentVo> getLangWorkList = contentMapper.getOrSearchLangWork(contentVo);
 		try {
-			return contentMapper.getOrSearchLangWork(contentVo);
+			return getLangWorkList.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getLangWorkList);
 		} catch (Exception e) {
-			return null;
+			throw new CustomException("서버 요청 실패", e);
 		}
 	}
 
-	public boolean modifyLangWork(ContentVo contentVo) {
+	public GmxResult modifyLangWork(ContentVo contentVo) { // 필수 파라미터 req_name, req_lang
 		try {
-			return contentMapper.modifyLangWork(contentVo);
+			return contentMapper.modifyLangWork(contentVo) ? gmxResult.result(true) : gmxResult.resultError("번역 실패");
 		} catch (Exception e) {
-			return false;
+			throw new CustomException("서버 요청 실패", e);
 		}
 	}
 
-	public boolean deleteLangWork(int mgrSeq) {
+	public GmxResult deleteLangWork(int mgrSeq) {
 		try {
-			return contentMapper.deleteLangWork(mgrSeq);
+			return contentMapper.deleteLangWork(mgrSeq) ? gmxResult.result(true) : gmxResult.resultError("삭제 실패");
 		} catch (Exception e) {
-			return false;
+			throw new CustomException("서버 요청 실패", e);
 		}
 	}
+
 }
