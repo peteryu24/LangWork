@@ -9,10 +9,10 @@ public class GmxResult {
 	private String msg;
 	private Object data;
 
-	public GmxResult resultError(String msg) {
+	public GmxResult resultError(String msg, Object data) {
 		this.chk = false;
 		this.msg = msg;
-		this.data = null;
+		this.data = data;
 		return this;
 	}
 
