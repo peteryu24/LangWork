@@ -15,6 +15,12 @@ public class GmxResult {
 		this.data = null;
 		return this;
 	}
+	public GmxResult resultErrorEntity(String msg, Object data) {
+		this.chk = false;
+		this.msg = msg;
+		this.data = data;
+		return this;
+	}
 
 	public GmxResult result(Object data) {
 		this.chk = true;
