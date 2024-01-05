@@ -1,21 +1,23 @@
 package gmx.fwd.utils.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class ApiErrorResponse {
-    private String error;
+    private HttpStatus status;
     private String message;
 
-    public ApiErrorResponse(String error, String message) {
+    public ApiErrorResponse(HttpStatus status, String message) {
         super();
-        this.error = error;
+        this.status = status;
         this.message = message;
     }
 
-    public String getError() {
-        return error;
+    public HttpStatus getStatus() {
+        return status;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setError(HttpStatus status) {
+        this.status = status;
     }
 
     public String getMessage() {
