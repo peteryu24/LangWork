@@ -12,7 +12,7 @@ import gmx.fwd.vo.contentvo.ContentVo;
 
 @Service
 public class ContentService {
-
+ 
 	@Autowired
 	private ContentMapper contentMapper;
 
