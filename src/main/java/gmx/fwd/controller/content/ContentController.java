@@ -1,7 +1,5 @@
 package gmx.fwd.controller.content;
 
-import javax.management.ListenerNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +53,12 @@ public class ContentController {
 	}
 
 	@ExceptionHandler(RuntimeException.class)
-	public GmxResult handleNoSuchElementFoundException(RuntimeException exception) {
+	public GmxResult handleRuntimeException(RuntimeException exception) {
+		return gmxResult.resultErrorEntity("error",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+	}
+	
+	@ExceptionHandler(LangWorkItemNotFoundException.class)
+	public GmxResult handleLangWorkItemNotFoundException(LangWorkItemNotFoundException exception) {
 		return gmxResult.resultErrorEntity("error",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
 	}
 }
