@@ -2,7 +2,7 @@ package gmx.fwd.vo.uservo;
 
 import org.springmodules.validation.bean.conf.loader.annotation.handler.NotBlank;
 
-public class UserVO {
+public class UserVo {
 	
 	
 	@NotBlank(message="닉네임은 공백과 null을 허용하지 않습니다.")

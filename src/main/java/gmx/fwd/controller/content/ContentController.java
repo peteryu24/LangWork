@@ -1,20 +1,27 @@
 package gmx.fwd.controller.content;
 
-import java.util.HashMap;
-import java.util.List;
-
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import gmx.fwd.service.content.ContentService;
 import gmx.fwd.utils.GmxResult;
+import gmx.fwd.utils.exception.LangWorkItemNotFoundException;
 import gmx.fwd.vo.contentvo.ContentVo;
 
 @Controller
+@RestController
 @RequestMapping("/gmxlang")
 public class ContentController {
 
@@ -24,54 +31,60 @@ public class ContentController {
 	@Autowired
 	private GmxResult gmxResult;
 
-	@ResponseBody
 	@PostMapping(value = "/addLangWork")
-	public HashMap<String, Object> addLangWork(@RequestParam String reqName, @RequestParam String resName, @RequestParam String reqLang,
-			@RequestParam String resLang, @RequestParam String etcNote) {
-
-		int addFlag = contentService.addLangWork(reqName, resName, reqLang, resLang, etcNote);
+	public GmxResult addLangWork(@Valid @ModelAttribute ContentVo contentVo, BindingResult bindingResult) {	
+		if (bindingResult.hasErrors())
+			return gmxResult.resultError(bindingResult.getFieldError().getDefaultMessage());
 		
-		if (addFlag <= 0) {
-			return gmxResult.resultError(addFlag == -1 ? "중복된 요청 건이 존재합니다." : "게시글 작성 실패");
-		}
-
-		return gmxResult.result(true);
+		return contentService.addLangWork(contentVo);
 	}
 
-	@ResponseBody
 	@PostMapping(value = "/getLangWorkItem")
-	public HashMap<String, Object> getLangWorkItem(int mgrSeq) {
-
-		List<ContentVo> getLangWorkList = contentService.getLangWorkItem(mgrSeq);
-
-		return getLangWorkList.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getLangWorkList);
+	public GmxResult getLangWorkItem(@RequestParam int mgrSeq) {
+		return contentService.getLangWorkItem(mgrSeq);
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/getLangWorkList")
-	public HashMap<String, Object> getOrSearchLangWork(@RequestParam(defaultValue = "", required = false) String reqName,
-			@RequestParam(defaultValue = "", required = false) String resName,
-			@RequestParam(defaultValue = "", required = false) String reqLang,
-			@RequestParam(defaultValue = "", required = false) String resLang,
-			@RequestParam(defaultValue = "", required = false) String resFlag) {
-
-		List<ContentVo> getOrSearchLangWorkList = contentService.getOrSearchLangWork(reqName, resName, reqLang, resLang, resFlag);
-		return getOrSearchLangWorkList.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getOrSearchLangWorkList);
+	@PostMapping(value = "/getLangWorkList")
+	public GmxResult getOrSearchLangWork(@ModelAttribute ContentVo contentVo) {
+		return contentService.getOrSearchLangWork(contentVo);
 	}
 
-	@ResponseBody
-	@PostMapping(value = "/modLangWork")
-	public HashMap<String, Object> modifyLangWork(@RequestParam int mgrSeq, @RequestParam String resName, @RequestParam String reqName,
-			@RequestParam String reqLang, @RequestParam String resLang, @RequestParam String etcNote) {
+	/*	@PostMapping(value = {"/getLangWorkList","/getLangWorkList"})
+		public GmxResult getOrSearchLangWorkItemOrList(@ModelAttribute ContentVo contentVo) {
+			return contentService.getOrSearchLangWork(contentVo);
+		}*/
 
-		return contentService.modifyLangWork(mgrSeq, resName, reqName, resLang, reqLang, etcNote) ? gmxResult.result(true)
-				: gmxResult.resultError("번역 실패");
+	@PutMapping(value = "/modLangWork")
+	public GmxResult modifyLangWork(@Valid @ModelAttribute ContentVo contentVo, BindingResult bindingResult) {
+		if (bindingResult.hasErrors())
+			return gmxResult.resultError(bindingResult.getFieldError().getDefaultMessage());
+		return contentService.modifyLangWork(contentVo);
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/delLangWork")
-	public HashMap<String, Object> deleteLangWork(@RequestParam int mgrSeq) {
+	@DeleteMapping(value = "/delLangWork")
+	public GmxResult deleteLangWork(@RequestParam int mgrSeq) {
+		return contentService.deleteLangWork(mgrSeq);
+	}
 
-		return contentService.deleteLangWork(mgrSeq) ? gmxResult.result(true) : gmxResult.resultError("삭제 실패");
+	@ExceptionHandler(RuntimeException.class)
+	public GmxResult handleRuntimeException(RuntimeException exception) {
+		return gmxResult.resultErrorEntity("RunTimeException", ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+	}
+
+	@ExceptionHandler(LangWorkItemNotFoundException.class)
+	public GmxResult handleLangWorkItemNotFoundException(LangWorkItemNotFoundException exception) {
+		return gmxResult.resultErrorEntity("LangWorkItemNotFoundException",
+				ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public GmxResult IllegalArgumentException(IllegalArgumentException exception) {
+		return gmxResult.resultErrorEntity("IllegalArgumentException",
+				ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public GmxResult Exception(Exception exception) { // handles if an error did not match any other methods.
+		return gmxResult.resultErrorEntity("Exception", ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
 	}
 }

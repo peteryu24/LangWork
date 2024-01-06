@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import gmx.fwd.mapper.user.UserMapper;
-import gmx.fwd.vo.uservo.UserVO;
+import gmx.fwd.vo.uservo.UserVo;
 
 @Service
 public class MyUserDetailService implements UserDetailsService {
@@ -25,14 +25,14 @@ public class MyUserDetailService implements UserDetailsService {
     	
 		System.out.println("loadUserByUsername in MyUserDetailService is called");
 		System.out.println("username is:" +username);
-        UserVO userVO = userMapper.securityLogin(username);
+		UserVo userVO = userMapper.securityLogin(username);
         if (userVO == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
         return new User(userVO.getUsername(), userVO.getPassword(), getAuthorities(userVO));
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(UserVO userVO) {
+    private Collection<? extends GrantedAuthority> getAuthorities(UserVo userVO) {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gmx.fwd.mapper.user.UserMapper;
-import gmx.fwd.vo.uservo.UserVO;
+import gmx.fwd.vo.uservo.UserVo;
 
 @Service
 public class UserService {
@@ -22,7 +22,7 @@ public class UserService {
 	 * 가입한 email이 기존에 이미 등록된 email이면 실패
 	 * 성공 실패 여부를 boolean으로 @UserController로 리턴
 	 */
-	public boolean register(UserVO user) {
+	public boolean register(UserVo user) {
 		
 		if((userMapper.getByUsername(user.getUsername())) != null) {
 			return false;
@@ -36,7 +36,7 @@ public class UserService {
 	 * HashMap에 email과 password를 넣음
 	 * 해당 HashMap을 @UserMapper로 념겨주어 쿼리문 실행
 	 */
-	public UserVO login(String username, String password) {
+	public UserVo login(String username, String password) {
 		Map<String, String> userInfo = new HashMap<>();
 		userInfo.put("username", username);
 		userInfo.put("password", password);
@@ -49,7 +49,7 @@ public class UserService {
 	 * 
 	 * 비밀번호 변경시 이메일을 키값으로 유저정보를 가져올 때 사용
 	 */
-	private UserVO getByUsername(String username) {
+	private UserVo getByUsername(String username) {
 		return userMapper.getByUsername(username);
 	}
 
@@ -67,7 +67,7 @@ public class UserService {
 	 * 에러 처리는 controller에서 다시
 	 */
 	public boolean changePassword(String username, String currentPassword, String newPassword, String confirmNewPassword) {
-		UserVO user = getByUsername(username);
+		UserVo user = getByUsername(username);
 
 		// whiteList
 		if (user == null)

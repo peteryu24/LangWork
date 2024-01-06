@@ -1,88 +1,55 @@
 package gmx.fwd.service.content;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gmx.fwd.mapper.content.ContentMapper;
+import gmx.fwd.utils.GmxResult;
 import gmx.fwd.vo.contentvo.ContentVo;
 
 @Service
 public class ContentService {
 
 	@Autowired
-	private ContentMapper contentMapper; // change post -> content
+	private ContentMapper contentMapper;
 
-	public int addLangWork(String reqName, String resName, String reqLang, String resLang, String etcNote) {
-		try {
-			if (!contentMapper.checkLangWork(reqLang)) {
-				return -1; // reqLang already exists
-			}
+	@Autowired
+	private GmxResult gmxResult;
 
-			ContentVo content = new ContentVo();
-
-			content.setReqName(reqName);
-			content.setResName(resName);
-			content.setReqLang(reqLang);
-			content.setResLang(resLang);
-			content.setEtcNote(etcNote);
-			content.setCtyCode(1);
-			content.setPrjCode("00001");
-
-			return contentMapper.addLangWork(content);
-
-		} catch (Exception e) {
-			return 0;
-		}
+	@Autowired
+	public ContentService(ContentMapper contentMapper) {
+		this.contentMapper = contentMapper;
 	}
 
-	public List<ContentVo> getLangWorkItem(int mgrSeq) {
-		try {
-			return contentMapper.getLangWorkItem(mgrSeq);
-		} catch (Exception e) {
-			return null;
+	public GmxResult addLangWork(ContentVo contentVo) { 	
+		if(contentVo.getReqName() == null || contentVo.getReqLang() == null) return gmxResult.resultError("필수 파라미터 없음");
+
+		if (contentMapper.checkLangWork(contentVo.getReqLang())) {
+			return gmxResult.resultError("중복된 요청 건이 존재합니다");
 		}
+
+		contentMapper.addLangWork(contentVo);
+		return gmxResult.result(true);
 	}
 
-	public List<ContentVo> getOrSearchLangWork(String reqName, String resName, String reqLang, String resLang, String resFlag) {
-		try {
-			HashMap<String, String> searchKeyWord = new HashMap<>();
-			searchKeyWord.put("reqName", reqName);
-			searchKeyWord.put("resName", resName);
-			searchKeyWord.put("reqLang", reqLang);
-			searchKeyWord.put("resLang", resLang);
-			searchKeyWord.put("resFlag", resFlag);
-
-			return contentMapper.getOrSearchLangWork(searchKeyWord);
-		} catch (Exception e) {
-			return null;
-		}
+	public GmxResult getLangWorkItem(int mgrSeq) {
+		List<ContentVo> getLangWorkItem = contentMapper.getLangWorkItem(mgrSeq);
+		return getLangWorkItem.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getLangWorkItem);
 	}
 
-	public boolean modifyLangWork(int mgrSeq, String resName, String reqName, String reqLang, String resLang, String etcNote) {
-		try {
-			ContentVo content = new ContentVo();
-			content.setMgrSeq(mgrSeq);
-			content.setResName(resName);
-			content.setReqName(reqName);
-			content.setReqLang(reqLang);
-			content.setResLang(resLang);
-			content.setEtcNote(etcNote);
-
-			return contentMapper.modifyLangWork(content);
-		} catch (Exception e) {
-			return false;
-		}
+	public GmxResult getOrSearchLangWork(ContentVo contentVo) { // 필수 파라미터 검색 값
+		List<ContentVo> getLangWorkList = contentMapper.getOrSearchLangWork(contentVo);
+		return getLangWorkList.isEmpty() ? gmxResult.resultError("조회 실패") : gmxResult.result(getLangWorkList);
 	}
 
-	public boolean deleteLangWork(int mgrSeq) {
-		try {
-			return contentMapper.deleteLangWork(mgrSeq);
-		} catch (Exception e) {
-			return false;
-		}
+	public GmxResult modifyLangWork(ContentVo contentVo) { // 필수 파라미터 req_name, req_lang
+		if(contentVo.getReqName() == null || contentVo.getReqLang() == null) return gmxResult.resultError("필수 파라미터 없음");
+		return contentMapper.modifyLangWork(contentVo) ? gmxResult.result(true) : gmxResult.resultError("번역 실패");
 	}
 
+	public GmxResult deleteLangWork(int mgrSeq) {
+		return contentMapper.deleteLangWork(mgrSeq) ? gmxResult.result(true) : gmxResult.resultError("삭제 실패");
+	}
 }
