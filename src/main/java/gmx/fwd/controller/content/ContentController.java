@@ -54,11 +54,16 @@ public class ContentController {
 
 	@ExceptionHandler(RuntimeException.class)
 	public GmxResult handleRuntimeException(RuntimeException exception) {
-		return gmxResult.resultErrorEntity("error",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+		return gmxResult.resultErrorEntity("RunTimeException",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
 	}
 	
 	@ExceptionHandler(LangWorkItemNotFoundException.class)
 	public GmxResult handleLangWorkItemNotFoundException(LangWorkItemNotFoundException exception) {
-		return gmxResult.resultErrorEntity("error",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+		return gmxResult.resultErrorEntity("LangWorkItemNotFoundException",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
+	}
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+	public GmxResult IllegalArgumentException (IllegalArgumentException  exception) {
+		return gmxResult.resultErrorEntity("IllegalArgumentException",ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage()));
 	}
 }
