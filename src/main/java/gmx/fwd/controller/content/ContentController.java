@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,7 +33,10 @@ public class ContentController {
 	private GmxResult gmxResult;
 
 	@PostMapping(value = "/addLangWork")
-	public GmxResult addLangWork(@Valid @ModelAttribute ContentVo contentVo) {
+	public GmxResult addLangWork(@Valid @ModelAttribute ContentVo contentVo, BindingResult bindingResult) {	
+		if (bindingResult.hasErrors())
+			return gmxResult.resultError(bindingResult.getFieldError().getDefaultMessage());
+		
 		return contentService.addLangWork(contentVo);
 	}
 
@@ -46,13 +50,16 @@ public class ContentController {
 		return contentService.getOrSearchLangWork(contentVo);
 	}
 
-/*	@PostMapping(value = {"/getLangWorkList","/getLangWorkList"})
-	public GmxResult getOrSearchLangWorkItemOrList(@ModelAttribute ContentVo contentVo) {
-		return contentService.getOrSearchLangWork(contentVo);
-	}*/
+	/*	@PostMapping(value = {"/getLangWorkList","/getLangWorkList"})
+		public GmxResult getOrSearchLangWorkItemOrList(@ModelAttribute ContentVo contentVo) {
+			return contentService.getOrSearchLangWork(contentVo);
+		}*/
 
 	@PutMapping(value = "/modLangWork")
-	public GmxResult modifyLangWork(@Valid @ModelAttribute ContentVo contentVo) {
+	public GmxResult modifyLangWork(@Valid @ModelAttribute ContentVo contentVo, BindingResult bindingResult) {
+		if (bindingResult.hasErrors())
+			return gmxResult.resultError(bindingResult.getFieldError().getDefaultMessage());
+
 		return contentService.modifyLangWork(contentVo);
 	}
 
