@@ -2,12 +2,15 @@ package gmx.fwd.vo.contentvo;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+
 public class ContentVo {
 	private int mgrSeq;
-
+	@NotBlank(message = "reqName is required")
 	private String reqName;
 	private String resName;
-
+	
+	@NotBlank(message = "reqLang is required")
 	private String reqLang;
 	private String resLang;
 
@@ -20,18 +23,7 @@ public class ContentVo {
 	
 	private boolean resFlag;
 
-	// without mgrSeq
-	public ContentVo(String reqName, String resName, String reqLang, String resLang, String etcNote, int ctyCode, String prjCode) {
-		this.reqName = reqName;
-		this.resName = resName;
-		this.reqLang = reqLang;
-		this.resLang = resLang;
-		this.etcNote = etcNote;
-		this.ctyCode = ctyCode;
-		this.prjCode = prjCode;
-	}
-
-	// with mgrSeq
+	// with mgrSeq to search
 	public ContentVo(int mgrSeq, String resName, String reqName, String reqLang, String resLang, String etcNote, int ctyCode,
 			String prjCode) {
 		this.mgrSeq = mgrSeq;
@@ -42,7 +34,18 @@ public class ContentVo {
 		this.etcNote = etcNote;
 		this.ctyCode = ctyCode;
 		this.prjCode = prjCode;
-
+		
+	}
+	
+	// without mgrSeq
+	public ContentVo(String reqName, String resName, String reqLang, String resLang, String etcNote, int ctyCode, String prjCode) {
+		this.reqName = reqName;
+		this.resName = resName;
+		this.reqLang = reqLang;
+		this.resLang = resLang;
+		this.etcNote = etcNote;
+		this.ctyCode = ctyCode;
+		this.prjCode = prjCode;
 	}
 
 	public ContentVo(String reqName, String resName, String reqLang, String resLang, boolean resFlag) {
