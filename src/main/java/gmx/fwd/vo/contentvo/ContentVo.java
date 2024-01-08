@@ -1,16 +1,16 @@
 package gmx.fwd.vo.contentvo;
 
-import java.util.Date; 
+import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
 
 public class ContentVo {
 	private int mgrSeq;
-	@NotBlank(message = "reqName is required")
+	@NotBlank(message = "요청자 이름은 필수 값입니다.")
 	private String reqName;
 	private String resName;
 	
-	@NotBlank(message = "reqLang is required")
+	@NotBlank(message = "요청 글은 필수 값입니다.")
 	private String reqLang;
 	private String resLang;
 
