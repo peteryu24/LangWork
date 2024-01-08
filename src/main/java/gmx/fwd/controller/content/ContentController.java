@@ -1,5 +1,7 @@
 package gmx.fwd.controller.content;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class ContentController {
 	private GmxResult gmxResult;
 
 	@PostMapping(value = "/addLangWork")
-	public GmxResult addLangWork(@ModelAttribute ContentVo contentVo) {
+	public GmxResult addLangWork(@Valid @ModelAttribute ContentVo contentVo) {
 		return contentService.addLangWork(contentVo);
 	}
 
@@ -50,7 +52,7 @@ public class ContentController {
 	}*/
 
 	@PutMapping(value = "/modLangWork")
-	public GmxResult modifyLangWork(@ModelAttribute ContentVo contentVo) {
+	public GmxResult modifyLangWork(@Valid @ModelAttribute ContentVo contentVo) {
 		return contentService.modifyLangWork(contentVo);
 	}
 
