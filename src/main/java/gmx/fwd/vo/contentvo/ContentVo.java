@@ -1,6 +1,6 @@
 package gmx.fwd.vo.contentvo;
 
-import java.util.Date;
+import java.util.Date; 
 
 import javax.validation.constraints.NotBlank;
 
