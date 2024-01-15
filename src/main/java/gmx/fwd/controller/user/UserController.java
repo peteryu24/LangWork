@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import gmx.fwd.service.user.UserService;
-import gmx.fwd.vo.uservo.UserVO;
+import gmx.fwd.vo.uservo.UserVo;
 
 @Controller
 @RequestMapping("/user")
@@ -56,7 +56,7 @@ public class UserController {
 	// @PostMapping("/register.do")
 	@ResponseBody
 	@RequestMapping(value = "/register.do", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = "application/json")
-	public HashMap<String, String> register(@Valid @ModelAttribute UserVO user, BindingResult bindingResult) {
+	public HashMap<String, String> register(@Valid @ModelAttribute UserVo user, BindingResult bindingResult) {
 
 		HashMap<String, String> response = new HashMap<>();
 		
