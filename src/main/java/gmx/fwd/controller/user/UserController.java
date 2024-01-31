@@ -79,7 +79,7 @@ public class UserController {
 		return "login/login";
 	}
 
-	// 비빌번호 변경 페이지로 이동시켜주는 컨트롤러
+	// 비밀번호 변경 페이지로 이동시켜주는 컨트롤러
 	@GetMapping("/showChangePassword.do")
 	public String showChangePasswordPage() {
 		return "login/changePassword";
