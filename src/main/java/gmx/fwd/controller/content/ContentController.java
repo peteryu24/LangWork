@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import gmx.fwd.service.content.ContentService;
 import gmx.fwd.utils.GmxResult;
 import gmx.fwd.vo.contentvo.ContentVo;
-
+ 
 @Controller
 @RequestMapping("/gmxlang")
 public class ContentController {
